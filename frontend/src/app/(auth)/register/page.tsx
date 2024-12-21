@@ -1,4 +1,5 @@
-import { Button } from "@/components/ui/button";
+import { registerAction } from "@/actions/authActions";
+import { SubmitButton } from "@/components/common/submitButton";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
@@ -11,9 +12,9 @@ function register() {
         <h1 className="text-4xl font-extrabold text-center bg-gradient-to-r from-pink-400 to-purple-400 text-transparent bg-clip-text">
           Clash
         </h1>
-        <h2 className="text-3xl font-bold   ">Register</h2>
+        <h2 className="text-3xl font-bold">Register</h2>
         <p>welcome to Clash</p>
-        <form>
+        <form action={registerAction}>
           <div className="mt-4">
             <Label htmlFor="name">Name</Label>
             <Input
@@ -52,7 +53,7 @@ function register() {
           </div>
 
           <div className="mt-4">
-            <Button className="w-full">Submit</Button>
+            <SubmitButton />
           </div>
         </form>
         <p className="text-center mt-2">

@@ -31,13 +31,15 @@ app.get("/", async (req, res) => {
   const html = await ejs.renderFile(__dirname + `/views/emails/welcome.ejs`, {
     name: "vishal",
   });
+  console.log("html is - ", html);
+
   try {
     emailQueue.add(emailQueueName, {
-      to: "test@gmail.com",
+      to: "yijorey751@evusd.com",
       subject: "testing",
       body: html,
     });
-    res.json({ message: "res send" });
+    res.json({ message: "res sendd" });
     return;
   } catch (error) {
     console.error("api error- ", error);
