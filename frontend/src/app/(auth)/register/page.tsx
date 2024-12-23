@@ -1,9 +1,5 @@
-import { registerAction } from "@/actions/authActions";
-import { SubmitButton } from "@/components/common/submitButton";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import Link from "next/link";
-import React from "react";
+import RegisterForm from "@/components/auth/RegisterForm";
 
 function register() {
   return (
@@ -14,48 +10,8 @@ function register() {
         </h1>
         <h2 className="text-3xl font-bold">Register</h2>
         <p>welcome to Clash</p>
-        <form action={registerAction}>
-          <div className="mt-4">
-            <Label htmlFor="name">Name</Label>
-            <Input
-              id="name"
-              type="text"
-              name="name"
-              placeholder="Enter your name..."
-            />
-          </div>
-          <div className="mt-4">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              name="email"
-              placeholder="Enter your email..."
-            />
-          </div>
-          <div className="mt-4">
-            <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              name="password"
-              type="password"
-              placeholder="Enter your password..."
-            />
-          </div>
-          <div className="mt-4">
-            <Label htmlFor="cpassword">Confirm Password</Label>
-            <Input
-              id="cpassword"
-              name="cpassword"
-              type="password"
-              placeholder="Confirm your password..."
-            />
-          </div>
+        <RegisterForm />
 
-          <div className="mt-4">
-            <SubmitButton />
-          </div>
-        </form>
         <p className="text-center mt-2">
           Already have an account ?{" "}
           <strong>
