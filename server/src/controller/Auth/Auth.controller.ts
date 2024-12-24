@@ -15,7 +15,6 @@ import { emailQueue, emailQueueName } from "../../jobs/EmailJob.js";
 import { zodFormatError } from "../../helper/zodFormatError.js";
 import asyncHandler from "../../utils/asyncHandler.js";
 import jwt from "jsonwebtoken";
-import { user } from "@prisma/client";
 import moment from "moment";
 
 const register = asyncHandler(async (req: Request, res: Response) => {
