@@ -13,7 +13,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model user {
+model User {
   id                   Int       @id @default(autoincrement())
   name                 String    @db.VarChar(191)
   email                String    @unique
@@ -23,4 +23,16 @@ model user {
   email_verify_at      DateTime?
   email_verify_token   String?
   created_at           DateTime  @default(now())
+  Clash                Clash[]
+}
+
+model Clash {
+  id          Int      @id @default(autoincrement())
+  user_id     Int
+  title       String
+  description String
+  image       String
+  expire_At   DateTime
+  created_At  DateTime @default(now())
+  user        User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
 }

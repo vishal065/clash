@@ -5,6 +5,8 @@ import {
   getUser,
   login,
   register,
+  resetPassword,
+  sendEmailForgetPassword,
   verifyEmail,
   verifyError,
 } from "../controller/Auth/Auth.controller.js";
@@ -18,5 +20,7 @@ authRouter.post("/check/credentials", checkCredentials);
 authRouter.get("/verify?", verifyEmail);
 authRouter.get("/verify-error", verifyError);
 authRouter.get("/user", authmiddleware, getUser);
+authRouter.post("/forget-password", sendEmailForgetPassword);
+authRouter.post("/reset-password", resetPassword);
 
 export default authRouter;

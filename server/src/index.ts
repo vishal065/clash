@@ -9,6 +9,7 @@ import "./jobs/index.js";
 // import { emailQueue, emailQueueName } from "./jobs/EmailJob.js";
 
 import * as dotenv from "dotenv";
+import { appLimiter } from "./config/rateLimit.js";
 dotenv.config();
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -19,6 +20,7 @@ const app: Application = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(appLimiter);
 
 // Set view engine
 app.set("view engine", "ejs");

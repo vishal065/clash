@@ -20,3 +20,21 @@ export const loginSchema = z.object({
   email: z.string().email(),
   password: z.string(),
 });
+export const forgetPasswordSchema = z.object({
+  email: z.string().email({ message: "Enter a valid email" }),
+});
+
+export const resetPasswordSchema = z
+  .object({
+    email: z
+      .string({ message: "Email is required" })
+      .email({ message: "Enter correct Email" }),
+    password: z.string().min(6),
+    confirm_password: z.string().min(6),
+    token: z.string({ message: "token is required" }),
+  })
+
+  .refine((data) => data.password === data.confirm_password, {
+    message: "Confirm password not match",
+    path: ["confirm_password"],
+  });

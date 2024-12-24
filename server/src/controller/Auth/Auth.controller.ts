@@ -1,8 +1,10 @@
 import "dotenv/config.js";
 import { Request, Response } from "express";
 import {
+  forgetPasswordSchema,
   loginSchema,
   registerSchema,
+  resetPasswordSchema,
 } from "../../validation/AuthValidation.js";
 import { v4 as uuid4 } from "uuid";
 import bcrypt from "bcrypt";
@@ -13,7 +15,8 @@ import { emailQueue, emailQueueName } from "../../jobs/EmailJob.js";
 import { zodFormatError } from "../../helper/zodFormatError.js";
 import asyncHandler from "../../utils/asyncHandler.js";
 import jwt from "jsonwebtoken";
-import { tryCatch } from "bullmq";
+import { user } from "@prisma/client";
+import moment from "moment";
 
 const register = asyncHandler(async (req: Request, res: Response) => {
   try {
@@ -155,7 +158,6 @@ const checkCredentials = asyncHandler(async (req, res) => {
   } catch (error) {
     if (error instanceof ZodError) {
       const errors = zodFormatError(error);
-      console.log("here ", errors);
 
       return res.status(422).json({ message: "invalid data", errors });
     }
@@ -206,4 +208,125 @@ const verifyError = asyncHandler(async (_, res) => {
   return res.render("auth/emailVerifyError");
 });
 
-export { register, verifyEmail, verifyError, login, getUser, checkCredentials };
+const sendEmailForgetPassword = asyncHandler(
+  async (req: Request, res: Response) => {
+    const data = req.body;
+    try {
+      const payload = forgetPasswordSchema.parse(data);
+
+      const user = prismaInstance.user.findUnique({
+        where: { email: payload.email },
+      });
+
+      if (!user) {
+        return res.status(422).json({
+          message: "Invalid data",
+          errors: { email: "No user found" },
+        });
+      }
+
+      const salt = await bcrypt.genSalt(10);
+      const token = await bcrypt.hash(uuid4(), salt);
+
+      await prismaInstance.user.update({
+        where: { email: payload.email },
+        data: {
+          password_reset_token: token,
+          token_send_at: new Date().toISOString(),
+        },
+      });
+
+      const url = `${process.env.APP_URL}/reset-password?email=${payload.email}&token=${token}`;
+
+      const html = await renderEmail("forget-password", { url });
+
+      await emailQueue.add(emailQueueName, {
+        to: payload.email,
+        subject: "Reset Password",
+        body: html,
+      });
+
+      return res.status(200).json({
+        message: "Password reset link send successfully please check your mail",
+      });
+    } catch (error) {
+      if (error instanceof ZodError) {
+        const errors = zodFormatError(error);
+
+        return res.status(422).json({ message: "invalid data", errors });
+      }
+      return res.status(500).json({ message: "something went wrong", error });
+    }
+  }
+);
+
+const checkDateHourDiff = (date: string): number => {
+  const now = moment();
+
+  const tokenSendAt = moment(date);
+  const difference = moment.duration(now.diff(tokenSendAt));
+  return difference.asHours();
+};
+
+const resetPassword = asyncHandler(async (req: Request, res: Response) => {
+  const body = req.body;
+  try {
+    const payload = resetPasswordSchema.parse(body);
+
+    const user = await prismaInstance.user.findUnique({
+      where: { email: payload.email },
+    });
+
+    if (!user || user?.password_reset_token != payload.token) {
+      return res.status(422).json({
+        message: "Invalid data",
+        errors: { email: "Link is not correct" },
+      });
+    }
+
+    //check 2 hour time frame
+    const hourDiff = checkDateHourDiff(String(user?.token_send_at));
+    if (hourDiff > 2) {
+      return res.status(422).json({
+        message: "Invalid data",
+        errors: { email: "password reset token expired" },
+      });
+    }
+
+    //update password
+
+    const salt = await bcrypt.genSalt(10);
+    const newPass = await bcrypt.hash(payload.password, salt);
+
+    await prismaInstance.user.update({
+      where: {
+        email: payload.email,
+      },
+      data: {
+        password: newPass,
+        password_reset_token: null,
+        token_send_at: null,
+      },
+    });
+
+    return res.status(200).json({ message: "password reset successfully" });
+  } catch (error) {
+    if (error instanceof ZodError) {
+      const errors = zodFormatError(error);
+
+      return res.status(422).json({ message: "invalid data", errors });
+    }
+    return res.status(500).json({ message: "something went wrong", error });
+  }
+});
+
+export {
+  register,
+  verifyEmail,
+  verifyError,
+  login,
+  getUser,
+  checkCredentials,
+  resetPassword,
+  sendEmailForgetPassword,
+};

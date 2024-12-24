@@ -15,7 +15,7 @@ function register() {
         <p className="text-center mt-2">
           Already have an account ?{" "}
           <strong>
-            <Link href={`/register`}>Register</Link>
+            <Link href={`/login`}>Login</Link>
           </strong>
         </p>
       </div>

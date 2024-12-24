@@ -1,4 +1,4 @@
-import { LOGIN_URL } from "@/lib/apiEndPoints";
+import { LOGIN_URL, NEXT_AUTH_SECRECT } from "@/lib/apiEndPoints";
 import axios from "axios";
 import { AuthOptions, ISODateString } from "next-auth";
 import { JWT } from "next-auth/jwt";
@@ -25,8 +25,8 @@ export const authOptions: AuthOptions = {
     async session({
       session,
       token,
-      user,
-    }: {
+    }: // user,
+    {
       session: CustomSession;
       token: JWT;
       user: CustomUser;
@@ -41,6 +41,7 @@ export const authOptions: AuthOptions = {
       return token;
     },
   },
+  secret: NEXT_AUTH_SECRECT,
   providers: [
     credentialsProvider({
       name: "Credentials",
@@ -56,6 +57,7 @@ export const authOptions: AuthOptions = {
         }
       },
     }),
+
     // ...add more providers here
   ],
 };
