@@ -25,8 +25,8 @@ function LoginForm() {
     } else if (state.status === 200) {
       toast.success(state.message);
       signIn("credentials", {
-        email: state.data.email,
-        password: state.data.password,
+        email: state.data?.email,
+        password: state.data?.password,
         redirect: true,
         callbackUrl: "/dashboard",
       });

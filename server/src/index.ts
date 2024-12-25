@@ -19,6 +19,7 @@ const app: Application = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(appLimiter);
+app.use(express.static("public"));
 app.use(
   fileUpload({
     limits: { fileSize: 50 * 1024 * 1024 },
