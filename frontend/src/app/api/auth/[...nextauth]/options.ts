@@ -1,9 +1,8 @@
-import { LOGIN_URL, NEXT_AUTH_SECRECT } from "@/lib/apiEndPoints";
-import axios from "axios";
 import { AuthOptions, ISODateString, User } from "next-auth";
 import { JWT } from "next-auth/jwt";
+import axios from "axios";
 import Credentials from "next-auth/providers/credentials";
-// import credentialsProvider from "next-auth/providers/credentials";
+import { LOGIN_URL } from "@/lib/apiEndPoints";
 
 export type CustomSession = {
   user?: CustomUser;
@@ -14,6 +13,7 @@ export type CustomUser = {
   id?: string | null;
   name?: string | null;
   email?: string | null;
+  image?: string | null;
   token?: string | null;
 };
 
@@ -21,13 +21,20 @@ export const authOptions: AuthOptions = {
   pages: {
     signIn: "/login",
   },
+  secret: process.env.NEXT_AUTH_SECRECT,
   debug: true,
-  // Configure one or more authentication providers
+
   callbacks: {
+    async jwt({ token, user }: { token: JWT; user: CustomUser }) {
+      if (user) {
+        token.user = user;
+      }
+      return token;
+    },
     async session({
       session,
       token,
-    }: // user
+    }: // user,
     {
       session: CustomSession;
       token: JWT;
@@ -36,32 +43,37 @@ export const authOptions: AuthOptions = {
       session.user = token.user as CustomUser;
       return session;
     },
-    async jwt({ token, user }: { token: JWT; user: CustomUser }) {
-      if (user) {
-        token.user = user;
-      }
-      return token;
-    },
   },
-  secret: NEXT_AUTH_SECRECT,
   providers: [
     Credentials({
-      name: "Credentials",
+      name: "Welcome Back",
       type: "credentials",
+
       credentials: {
-        email: {},
-        password: {},
+        email: {
+          label: "Email",
+          type: "email",
+          placeholder: "Enter your email",
+        },
+        password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        const { data } = await axios.post(LOGIN_URL, credentials);
-        const user = data?.data;
-        if (user) {
-          return user;
+        try {
+          const { data } = await axios.post(LOGIN_URL, credentials);
+          console.log("check kr ", data);
+
+          const user = data?.data;
+          if (user) {
+            return user;
+          } else {
+            return null;
+          }
+        } catch (error) {
+          console.log("error is ", error);
+
+          return null;
         }
-        return null;
       },
     }),
-
-    // ...add more providers here
   ],
 };

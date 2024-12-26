@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { SubmitButton } from "../common/submitButton";
 import { useActionState, useEffect } from "react";
-import { forgetPasswordAction } from "@/actions/authActions";
+import { forgetPasswordAction } from "@/app/actions/authActions";
 import { toast } from "sonner";
 
 function ForgetPasswordForm() {

@@ -3,12 +3,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { SubmitButton } from "../common/submitButton";
 import { useActionState, useEffect } from "react";
-import { resetPasswordAction } from "@/actions/authActions";
+import { resetPasswordAction } from "@/app/actions/authActions";
 import { toast } from "sonner";
 import { useRouter, useSearchParams } from "next/navigation";
 
 function ResetPasswordForm() {
-    
   const initialState = {
     status: 0,
     message: "",
@@ -16,7 +15,7 @@ function ResetPasswordForm() {
   };
 
   const searchParams = useSearchParams();
-  const router = useRouter()
+  const router = useRouter();
 
   const [state, formAction] = useActionState(resetPasswordAction, initialState);
 
@@ -25,7 +24,7 @@ function ResetPasswordForm() {
       toast.error(state.message);
     } else if (state.status === 200) {
       toast.success(state.message);
-      router.replace("/login")
+      router.replace("/login");
     }
   }, [state]);
 

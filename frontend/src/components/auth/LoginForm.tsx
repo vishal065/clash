@@ -4,7 +4,7 @@ import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { SubmitButton } from "../common/submitButton";
 import { useActionState, useEffect } from "react";
-import { loginAction } from "@/actions/authActions";
+import { loginAction } from "@/app/actions/authActions";
 import { toast } from "sonner";
 import { signIn } from "next-auth/react";
 

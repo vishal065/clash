@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,14 +8,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import UserAvatar from "../common/UserAvatar";
-// import { useState } from "react";
-// import LogoutModel from "../auth/LogoutModel";
+import { useState } from "react";
+import LogoutModel from "../auth/LogoutModel";
 
 function Navbar() {
-  // const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false);
   return (
     <>
-      {/* <LogoutModel open={open} setOpen={setOpen} /> */}
+      <LogoutModel open={open} setOpen={setOpen} />
       <nav className="flex justify-between items-center h-14 p-2 w-full  ">
         <h1 className="text-4xl font-extrabold bg-gradient-to-r from-pink-400 to-purple-500 text-transparent bg-clip-text">
           Clash
@@ -29,9 +29,9 @@ function Navbar() {
             <DropdownMenuSeparator />
             <DropdownMenuItem>Profile</DropdownMenuItem>
 
-            {/* <DropdownMenuItem onClick={() => setOpen(true)}>
+            <DropdownMenuItem onClick={() => setOpen(true)}>
               Logout
-            </DropdownMenuItem> */}
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </nav>

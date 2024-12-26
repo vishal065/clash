@@ -8,4 +8,5 @@ export const FORGET_PASSWORD_URL = `${BaseUrl}/auth/forget-password`;
 export const RESET_PASSWORD_URL = `${BaseUrl}/auth/reset-password`;
 
 //env
-export const NEXT_AUTH_SECRECT = process.env.NEXT_AUTH_SECRECT;
+
+export const NEXT_AUTH_SECRECT = process.env.NEXT_AUTH_SECRECT!;
