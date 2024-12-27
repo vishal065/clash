@@ -21,21 +21,25 @@ import { useState } from "react";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { CLASH_URL } from "@/lib/apiEndPoints";
+import { CustomUser } from "@/app/api/auth/[...nextauth]/options";
+import { toast } from "sonner";
+import { ClashFormType, ClashFormTypeError } from "@/types";
 
-function AddClash() {
+function AddClash({ user }: { user: CustomUser }) {
   const [open, setOpen] = useState(false);
-  const [date, setDate] = React.useState<Date>();
+  const [date, setDate] = React.useState<Date | null>();
   const [clashData, setClashData] = useState<ClashFormType>({});
   const [image, setImage] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState<ClashFormTypeError>({});
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) setImage(file);
   };
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     try {
       e.preventDefault();
       setLoading(true);
@@ -45,8 +49,28 @@ function AddClash() {
       formData.append("description", clashData.description ?? "");
       formData.append("expire_at", date?.toISOString() ?? "");
       if (image) formData.append("image", image);
-      const {} = await axios.post(`${CLASH_URL}/create`, formData);
-    } catch (error) {}
+      const { data } = await axios.post(`${CLASH_URL}/create`, formData, {
+        headers: { Authorization: user.token },
+      });
+      setLoading(false);
+      if (data?.message) {
+        setClashData({});
+        setDate(null);
+        setImage(null);
+        setErrors({});
+        toast.success("clash added successfully");
+        setOpen(false);
+      }
+    } catch (error) {
+      setLoading(false);
+      if (error instanceof AxiosError) {
+        if (error.response?.status === 422) {
+          setErrors(error?.response?.data?.errors);
+        }
+      } else {
+        toast.error("something went wrong please try again ");
+      }
+    }
   };
 
   return (
@@ -58,7 +82,7 @@ function AddClash() {
         <DialogHeader>
           <DialogTitle>Create Clash</DialogTitle>
         </DialogHeader>
-        <form>
+        <form onSubmit={handleSubmit}>
           <div className="mt-4">
             <Label htmlFor="title">Title</Label>
             <Input
@@ -69,6 +93,7 @@ function AddClash() {
                 setClashData({ ...clashData, title: e.target.value })
               }
             />
+            <span className="text-red-500">{errors?.title}</span>
           </div>
           <div className="mt-4">
             <Label htmlFor="description">Description</Label>
@@ -80,17 +105,12 @@ function AddClash() {
                 setClashData({ ...clashData, description: e.target.value })
               }
             />
+            <span className="text-red-500">{errors?.description}</span>
           </div>
           <div className="mt-4">
             <Label htmlFor="image">Image</Label>
-            <Input
-              id="image"
-              type="file"
-              value={clashData?.title ?? ""}
-              onChange={(e) =>
-                setClashData({ ...clashData, title: e.target.value })
-              }
-            />
+            <Input id="image" type="file" onChange={handleImageChange} />
+            <span className="text-red-500">{errors?.image}</span>
           </div>
           <div className="mt-4">
             <Label htmlFor="expireAt" className="block">
@@ -113,15 +133,18 @@ function AddClash() {
               <PopoverContent className="w-auto p-0">
                 <Calendar
                   mode="single"
-                  selected={date}
+                  selected={date ?? new Date()}
                   onSelect={setDate}
                   initialFocus
                 />
               </PopoverContent>
             </Popover>
+            <span className="text-red-500">{errors?.expire_At}</span>
           </div>
           <div className="mt-4">
-            <Button className="w-full">Submit</Button>
+            <Button className="w-full" disabled={loading}>
+              {loading ? "processing" : "Submit"}
+            </Button>
           </div>
         </form>
       </DialogContent>
