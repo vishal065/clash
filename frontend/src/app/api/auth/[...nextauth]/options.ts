@@ -62,15 +62,22 @@ export const authOptions: AuthOptions = {
           const { data } = await axios.post(LOGIN_URL, credentials);
 
           const user = data?.data;
+
           if (user) {
             return user;
           } else {
             return null;
           }
         } catch (error) {
-          console.log("error is ", error);
-
-          return null;
+          if (axios.isAxiosError(error)) {
+            throw new Error(
+              error.response?.data?.message || "Login failed. Please try again."
+            );
+          } else {
+            throw new Error(
+              "Unexpected error occurred. Please try again later."
+            );
+          }
         }
       },
     }),

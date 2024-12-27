@@ -1,11 +1,11 @@
 "use client";
 import { signIn } from "next-auth/react";
-import { toast } from "sonner";
 
 type State = {
   status: number;
   message: string;
   errors: object;
+  redirect: boolean;
 };
 
 export async function loginAction(prevState: State, formdata: FormData) {
@@ -16,34 +16,34 @@ export async function loginAction(prevState: State, formdata: FormData) {
     const result = await signIn("credentials", {
       email: email,
       password: password,
-      redirect: true,
-      callbackUrl: "/dashboard",
+      redirect: false,
     });
 
     if (result?.error) {
-      toast.error(result.error);
       return {
         status: 401,
         message: result.error,
-        errors: {},
+        errors: { email: "Invalid email or password." },
         data: {},
+        redirect: false,
       };
     } else {
       return {
         status: 200,
-        message: "Login in progress",
+        message: "Login successful",
         errors: {},
         data: {},
+        redirect: true,
       };
     }
   } catch (error) {
     console.error("Error during sign in:", error);
-    toast.error("An unexpected error occurred.");
     return {
       status: 500,
       message: "An unexpected error occurred.",
       errors: {},
       data: {},
+      redirect: false,
     };
   }
 }

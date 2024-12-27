@@ -6,26 +6,29 @@ import { SubmitButton } from "../common/submitButton";
 import { useActionState, useEffect } from "react";
 import { loginAction } from "@/app/actions/loginAction";
 import { toast } from "sonner";
-
+import { useRouter } from "next/navigation";
 function LoginForm() {
   const initialState = {
     status: 0,
     message: "",
     errors: {},
     data: {},
+    redirect: false,
   };
 
   const [state, formAction] = useActionState(loginAction, initialState);
-  console.log("state is-", state.data);
+  const router = useRouter(); // Initialize useRouter hook
 
   useEffect(() => {
-    console.log("login form", state);
-    if (state.status === 500) {
+    if (state.status === 500 || state.status === 401) {
       toast.error(state.message);
     } else if (state.status === 200) {
       toast.success(state.message);
+      if (state.redirect) {
+        router.push("/dashboard");
+      }
     }
-  }, [state]);
+  }, [state, router]);
 
   return (
     <form action={formAction}>
@@ -37,7 +40,6 @@ function LoginForm() {
           name="email"
           placeholder="Enter your email..."
         />
-        {/* <span className="text-red-500">{state.errors?.email}</span> */}
       </div>
       <div className="mt-4">
         <Label htmlFor="password">Password</Label>
@@ -47,7 +49,6 @@ function LoginForm() {
           type="password"
           placeholder="Enter your password..."
         />
-        {/* <span className="text-red-500">{state.errors?.password}</span> */}
       </div>
       <div className="text-right font-bold">
         <Link href={`forget-password`}>Forget Password ?</Link>
