@@ -14,7 +14,6 @@ function RegisterForm() {
   };
 
   const [state, formAction] = useActionState(registerAction, initialState);
-  console.log(state);
 
   useEffect(() => {
     if (state.status === 500) {
@@ -23,7 +22,7 @@ function RegisterForm() {
       toast.success(state.message);
     }
 
-    return () => {};
+    // return () => {};
   }, [state]);
 
   return (

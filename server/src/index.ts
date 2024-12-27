@@ -11,7 +11,6 @@ dotenv.config();
 import "./jobs/index.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-console.log(__dirname + `views`);
 
 const PORT: number = Number(process.env.PORT) || 4001;
 const app: Application = express();

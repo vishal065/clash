@@ -60,7 +60,6 @@ export const authOptions: AuthOptions = {
       async authorize(credentials) {
         try {
           const { data } = await axios.post(LOGIN_URL, credentials);
-          console.log("check kr ", data);
 
           const user = data?.data;
           if (user) {
