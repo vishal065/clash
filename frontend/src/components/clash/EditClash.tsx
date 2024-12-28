@@ -23,17 +23,30 @@ import { Input } from "../ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import axios, { AxiosError } from "axios";
 import { CLASH_URL } from "@/lib/apiEndPoints";
-import { CustomUser } from "@/app/api/auth/[...nextauth]/options";
 import { toast } from "sonner";
-import { ClashFormType, ClashFormTypeError } from "@/types";
+import { ClashFetchData, ClashFormType, ClashFormTypeError } from "@/types";
 import { DialogDescription } from "@radix-ui/react-dialog";
 import { clearCache } from "@/app/actions/commonActions";
 
 //! by removing initialFocus from calender or adding model true in popover will fix the error
-function AddClash({ user }: { user: CustomUser }) {
-  const [open, setOpen] = useState(false);
-  const [date, setDate] = React.useState<Date | null>();
-  const [clashData, setClashData] = useState<ClashFormType>({});
+function EditClash({
+  token,
+  clash,
+  open,
+  setOpen,
+}: {
+  token: string;
+  clash: ClashFetchData;
+  open: boolean;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
+  const [date, setDate] = React.useState<Date | null>(
+    new Date(clash.expire_At)
+  );
+  const [clashData, setClashData] = useState<ClashFormType>({
+    title: clash.title,
+    description: clash.description,
+  });
   const [image, setImage] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<ClashFormTypeError>({});
@@ -54,9 +67,14 @@ function AddClash({ user }: { user: CustomUser }) {
       formData.append("expire_At", date?.toISOString() ?? "");
       if (image) formData.append("image", image);
 
-      const { data } = await axios.post(`${CLASH_URL}/create`, formData, {
-        headers: { Authorization: user.token },
-      });
+      const { data } = await axios.put(
+        `${CLASH_URL}/update/${clash.id}`,
+        formData,
+        {
+          headers: { Authorization: token },
+        }
+      );
+      console.log(data);
 
       setLoading(false);
       if (data?.message) {
@@ -65,7 +83,7 @@ function AddClash({ user }: { user: CustomUser }) {
         setDate(null);
         setImage(null);
         setErrors({});
-        toast.success("clash added successfully");
+        toast.success(data?.message);
         setOpen(false);
       }
     } catch (error) {
@@ -147,7 +165,7 @@ function AddClash({ user }: { user: CustomUser }) {
                 <Calendar
                   mode="single"
                   selected={date ?? new Date()}
-                  onSelect={setDate}
+                  onSelect={(date) => setDate(date!)}
                   initialFocus
                 />
               </PopoverContent>
@@ -165,4 +183,4 @@ function AddClash({ user }: { user: CustomUser }) {
   );
 }
 
-export default AddClash;
+export default EditClash;

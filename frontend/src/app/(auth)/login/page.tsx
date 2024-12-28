@@ -1,8 +1,15 @@
+import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import LoginForm from "@/components/auth/LoginForm";
+import { getServerSession } from "next-auth";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import React from "react";
 
-function login() {
+async function login() {
+  const session = await getServerSession(authOptions);
+  if (session) {
+    redirect("/dashboard");
+  }
   return (
     <div className="flex justify-center items-center h-screen">
       <div className="w-[550px] bg-white/70 rounded-xl  px-10 py-5 shadow-md">

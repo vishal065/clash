@@ -54,6 +54,9 @@ const getAll = asyncHandler(async (req, res) => {
       where: {
         user_id: req.user?.id,
       },
+      orderBy: {
+        id: "desc",
+      },
     });
     return res
       .status(200)
@@ -110,6 +113,8 @@ const update = asyncHandler(async (req, res) => {
       where: { id: Number(id) },
       data: { ...payload, expire_At: new Date(payload.expire_At) },
     });
+
+    return res.status(200).json({ message: "clash updated successfully" });
   } catch (error) {
     if (error instanceof ZodError) {
       const errors = zodFormatError(error);
@@ -140,4 +145,4 @@ const deleteByID = asyncHandler(async (req, res) => {
   }
 });
 
-export { create, getAll, getById ,update,deleteByID};
+export { create, getAll, getById, update, deleteByID };

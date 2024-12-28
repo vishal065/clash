@@ -8,3 +8,13 @@ export type ClashFormTypeError = {
   expire_At?: string;
   image?: string;
 };
+
+export type ClashFetchData = {
+  id: number;
+  user_id: number;
+  title: string;
+  description: string;
+  image: string;
+  created_At: string;
+  expire_At: string;
+};
