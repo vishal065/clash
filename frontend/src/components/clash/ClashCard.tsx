@@ -11,6 +11,16 @@ import Image from "next/image";
 import { getImageURL } from "@/lib/utils";
 import { Button } from "../ui/button";
 import ClashCardMenu from "./ClashCardMenu";
+import Link from "next/link";
+
+type user = {
+  username: string;
+  age: number;
+};
+
+function check(user: user): user {
+  return user;
+}
 
 function ClashCard({ clash, token }: { clash: ClashFetchData; token: string }) {
   return (
@@ -36,7 +46,9 @@ function ClashCard({ clash, token }: { clash: ClashFetchData; token: string }) {
         </p>
       </CardContent>
       <CardFooter>
-        <Button>items</Button>
+        <Link href={`/clash/items/${clash.id}`}>
+          <Button>items</Button>
+        </Link>
       </CardFooter>
     </Card>
   );

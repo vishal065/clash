@@ -80,7 +80,7 @@ const getById = asyncHandler(async (req, res) => {
     });
     return res
       .status(200)
-      .json({ message: "Data fetch successfuly", date: clash });
+      .json({ message: "Data fetch successfuly", data: clash });
   } catch (error) {
     return res.status(500).json({ message: "something went wrong", error }); //server error
   }

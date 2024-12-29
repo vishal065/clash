@@ -12,8 +12,11 @@ const clashRoute = Router();
 
 clashRoute.post("/create", authmiddleware, create);
 clashRoute.get("/getall", authmiddleware, getAll);
-clashRoute.get("/get/:id", authmiddleware, getById);
+clashRoute.get("/get/:id", getById);
 clashRoute.put("/update/:id", authmiddleware, update);
 clashRoute.delete("/delete/:id", authmiddleware, deleteByID);
+
+//item Routes
+clashRoute.post("/items/:id", authmiddleware,);  
 
 export default clashRoute;

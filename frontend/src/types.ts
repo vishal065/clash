@@ -18,3 +18,7 @@ export type ClashFetchData = {
   created_At: string;
   expire_At: string;
 };
+
+export type ClashItemForm = {
+  image: File | null;
+};

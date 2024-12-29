@@ -8,7 +8,7 @@ import {
 } from "../api/auth/[...nextauth]/options";
 import { getServerSession } from "next-auth";
 import { ClashFetchData } from "@/types";
-import ClashFetch from "../fetch/ClashFetch";
+import { ClashFetch } from "../../fetch/ClashFetch";
 import ClashCard from "@/components/clash/ClashCard";
 
 async function Dashboard() {

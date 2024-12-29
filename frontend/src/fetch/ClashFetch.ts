@@ -32,4 +32,24 @@ async function ClashFetch(token: string): Promise<any[]> {
     return []; // Return an empty array or rethrow the error based on your use case
   }
 }
-export default ClashFetch;
+
+async function SingleClashFetch(id: number) {
+  try {
+    const res = await fetch(`${CLASH_URL}/get/${id}`, { cache: "no-cache" });
+
+    if (!res.ok) {
+      throw new Error(`Failed to fetch data: ${res.status} ${res.statusText}`);
+    }
+    const response = await res.json();
+
+    if (response?.data) {
+      return response?.data;
+    }
+    return null;
+  } catch (error) {
+    console.error("Error fetching Clash data:", error);
+    return []; // Return an empty array or rethrow the error based on your use case
+  }
+}
+
+export { ClashFetch, SingleClashFetch };
