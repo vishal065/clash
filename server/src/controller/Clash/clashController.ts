@@ -70,13 +70,20 @@ const getById = asyncHandler(async (req, res) => {
   try {
     const { id } = req.params;
     const clash = await prismaInstance.clash.findUnique({
-      select: {
-        id: true,
-        title: true,
-        description: true,
-        image: true,
-      },
+      // select: {
+      //   id: true,
+      //   title: true,
+      //   description: true,
+      //   image: true,
+      // },
       where: { id: Number(id) },
+      include: {
+        ClashItem: { select: { image: true, id: true, count: true } },
+        ClashComments: {
+          select: { id: true, comment: true, created_At: true },
+          orderBy: { id: "desc" },
+        },
+      },
     });
     return res
       .status(200)

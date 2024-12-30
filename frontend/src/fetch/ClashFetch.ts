@@ -25,7 +25,6 @@ async function ClashFetch(token: string): Promise<any[]> {
     }
 
     const response: ClashResponse = await res.json();
-    console.log("res us ", response);
     return response?.data || [];
   } catch (error) {
     console.error("Error fetching Clash data:", error);

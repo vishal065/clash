@@ -17,7 +17,7 @@ import asyncHandler from "../../utils/asyncHandler.js";
 import jwt from "jsonwebtoken";
 import moment from "moment";
 
-const register = asyncHandler(async (req: Request, res: Respons) => {
+const register = asyncHandler(async (req: Request, res: Response) => {
   try {
     const data = req.body;
     let payload: any = registerSchema.parse(data);

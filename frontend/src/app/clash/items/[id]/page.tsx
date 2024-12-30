@@ -4,15 +4,22 @@ import {
 } from "@/app/api/auth/[...nextauth]/options";
 import Navbar from "@/components/base/Navbar";
 import AddClashItems from "@/components/clash/AddClashItems";
+import ViewClashItems from "@/components/clash/viewClashItems";
+
 import { SingleClashFetch } from "@/fetch/ClashFetch";
 import { ClashFetchData } from "@/types";
 import { getServerSession } from "next-auth";
 import React from "react";
 
-async function ClashItems({ params }: { params: { id: number } }) {
+async function ClashItems({ params }: { params: { id: string } }) {
+  const clashId = Number(params.id); // Convert string to number if necessary
+  if (isNaN(clashId)) {
+    return <div>Error: Invalid Clash ID</div>;
+  }
+
   const session: CustomSession | null = await getServerSession(authOptions);
-  const clash: ClashFetchData | null = await SingleClashFetch(params.id);
-  console.log("here is data ", clash);
+
+  const clash: ClashFetchData | null = await SingleClashFetch(clashId); 
 
   return (
     <div className=" container">
@@ -23,10 +30,17 @@ async function ClashItems({ params }: { params: { id: number } }) {
         </h1>
         <p className="text-lg text-white">{clash?.description}</p>
       </div>
-      <AddClashItems
-        token={session?.user?.token as string}
-        clashId={params.id}
-      />
+      {clash?.ClashItem && clash?.ClashItem?.length > 0 ? (
+        <>
+          <h1 className="text-white">vishal</h1>
+          <ViewClashItems clash={clash} />
+        </>
+      ) : (
+        <AddClashItems
+          token={session?.user?.token as string}
+          clashId={clashId}
+        />
+      )}
     </div>
   );
 }

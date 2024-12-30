@@ -11,6 +11,6 @@ export const RESET_PASSWORD_URL = `${BaseUrl}/auth/reset-password`;
 
 export const NEXT_AUTH_SECRECT = process.env.NEXT_AUTH_SECRECT!;
 
-
 //clash
 export const CLASH_URL = `${BaseUrl}/clash`;
+export const CLASH_ITEMS_URL = `${BaseUrl}/clash/items`;

@@ -74,8 +74,6 @@ function EditClash({
           headers: { Authorization: token },
         }
       );
-      console.log(data);
-
       setLoading(false);
       if (data?.message) {
         clearCache("dashboard");

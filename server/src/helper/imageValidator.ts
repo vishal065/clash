@@ -23,7 +23,7 @@ export const imageValidator = (size: number, mime: string): string | null => {
   return null;
 };
 
-export const uploadFile = async (image: UploadedFile) => {
+export const uploadFile = (image: UploadedFile) => {
   const imgExt = image?.name.split(".");
   const ImageName = uuid() + "." + imgExt[1];
   const uploadPath = process.cwd() + "/public/images" + ImageName;

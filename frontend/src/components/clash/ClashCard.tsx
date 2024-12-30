@@ -13,16 +13,9 @@ import { Button } from "../ui/button";
 import ClashCardMenu from "./ClashCardMenu";
 import Link from "next/link";
 
-type user = {
-  username: string;
-  age: number;
-};
-
-function check(user: user): user {
-  return user;
-}
-
 function ClashCard({ clash, token }: { clash: ClashFetchData; token: string }) {
+
+  
   return (
     <Card>
       <CardHeader className="flex justify-between items-center flex-row">
@@ -46,7 +39,7 @@ function ClashCard({ clash, token }: { clash: ClashFetchData; token: string }) {
         </p>
       </CardContent>
       <CardFooter>
-        <Link href={`/clash/items/${clash.id}`}>
+        <Link href={`/clash/items/${clash?.id}`}>
           <Button>items</Button>
         </Link>
       </CardFooter>

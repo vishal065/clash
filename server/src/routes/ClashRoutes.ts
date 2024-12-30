@@ -7,6 +7,7 @@ import {
   getById,
   update,
 } from "../controller/Clash/clashController.js";
+import { addClashItems } from "../controller/Clash/clashItemController.js";
 
 const clashRoute = Router();
 
@@ -17,6 +18,6 @@ clashRoute.put("/update/:id", authmiddleware, update);
 clashRoute.delete("/delete/:id", authmiddleware, deleteByID);
 
 //item Routes
-clashRoute.post("/items/:id", authmiddleware,);  
+clashRoute.post("/items/add", authmiddleware, addClashItems);
 
 export default clashRoute;

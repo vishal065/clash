@@ -23,8 +23,8 @@ async function Dashboard() {
         <AddClash user={session?.user as CustomUser} />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6 ">
-        {clashes.length > 0 &&
-          clashes.map((item, i) => (
+        {clashes?.length > 0 &&
+          clashes?.map((item, i) => (
             <ClashCard
               clash={item}
               key={i}
